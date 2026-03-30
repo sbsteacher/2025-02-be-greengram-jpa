@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: greengramjpa
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/greengram_jpa
+    username: root
+    password: green502
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update # create, update, none,   (DDL: 데이터 정의어 - CREATE, ALTER, DROP)
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 50 # 배치작업 크기 설정
+        format_sql: true # 쿼리문 보기편하게 포맷팅
+        order_updates: true # JPA Batch 작업 활성화
+    show-sql: true # JPA가 쿼리문 로그에 출력
+
