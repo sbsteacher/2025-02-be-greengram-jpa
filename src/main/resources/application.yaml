@@ -1,3 +1,20 @@
+constants:   # 커스텀 속성
+  jwt:
+    issuer: green502@green.com # JWT 토큰 발행자 정보
+    bearer-format: JWT
+    claim-key: signedUser
+    secret-key: DeaguGreenArtAcademyClass502MsaClassFighting # 비밀 레시피(절대 공개되어서는 안 된다)
+    access-token-cookie-name: access-token
+    access-token-cookie-path: /
+    access-token-cookie-validity-seconds: 5 # 15분
+    access-token-validity-milliseconds: 5_000 # 15분
+    refresh-token-cookie-name: refresh-token
+    refresh-token-cookie-path: /api/user/reissue
+    refresh-token-cookie-validity-seconds: 1_296_000 # 15일
+    refresh-token-validity-milliseconds: 1_296_000_000 # 15일
+  file:
+    directory: D:/test/download/greengram
+
 spring:
   application:
     name: greengramjpa
