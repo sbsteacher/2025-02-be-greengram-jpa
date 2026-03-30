@@ -62,5 +62,61 @@ public class UserService {
         return result;
     }
 
+    public UserSignInRes signIn(UserSignInReq req) {
+        User user = userRepository.findByUid( req.getUid() );
+        log.info("user: {}", user);
+        if(user == null || !passwordEncoder.matches(req.getUpw(), user.getUpw())) { //비밀번호가 맞지 않으면?
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "아이디, 비밀번호를 확인해 주세요.");
+        }
+
+        return UserSignInRes.builder()
+                .signedUserId( user.getId() )
+                .nm( user.getNm() )
+                .pic( user.getPic() )
+                .build();
+    }
+
+    public UserProfileGetRes getProfileUser (UserProfileGetReq req) {
+        /* followState, 0, 1, 2, 3
+        profile주인, 로그인한 사용자 간의 팔로우 상태값
+        0: 서로 팔로우 안 한 상태
+        1: 로그인한 사용자가 profile주인을 팔로우 한 상태
+        2: profile주인이 로그인한 사용자를 팔로우 한 상태
+        3: 서로 팔로우 한 상태
+         */
+        return null;
+    }
+
+    public String patchProfilePic(long signedUserId, MultipartFile pic) {
+        //기존 프로파일 사진은 삭제, 기존 파일명을 구해야 함.
+        //UserGetOneRes res = userMapper.findById( signedUserId );
+        //밑의 res는 영속성이 있는 객체라고 부른다. 영속성이 있다는 말은 엔티티 매니저가 관리하는 객체
+        User res = userRepository.findById( signedUserId ).orElseThrow();
+        String folderPath = String.format("user/%d", signedUserId);
+
+        //파일 삭제 고고!!
+        String existedFilePath = String.format("%s/%s", folderPath, res.getPic());
+        myFileUtil.deleteFile(existedFilePath);
+
+        //폴더 생성
+        myFileUtil.makeFolders(folderPath);
+
+        //업로드 한 파일 원하는 위치로 이동
+        String saveFileName = myFileUtil.makeRandomFileName(pic); //저장시킬 파일명 만들었고
+        String saveFullFilePath = String.format("%s/%s", folderPath, saveFileName);
+
+        try {
+            myFileUtil.transferTo(pic, saveFullFilePath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        res.setPic( saveFileName );
+
+        userRepository.save(res); //영속성이 있는 객체를 save하면 update문이 된다.
+
+        return saveFileName;
+    }
+
 
 }
