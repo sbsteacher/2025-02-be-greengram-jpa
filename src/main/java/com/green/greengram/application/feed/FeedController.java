@@ -4,6 +4,7 @@ package com.green.greengram.application.feed;
 import com.green.greengram.application.feed.model.*;
 import com.green.greengram.configuration.model.ResultResponse;
 import com.green.greengram.configuration.model.UserPrincipal;
+import com.green.greengram.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,6 +26,8 @@ public class FeedController {
                                     , @RequestPart(name = "pic") List<MultipartFile> pics) {
         log.info("req: {}", req);
         log.info("pics.size(): {}", pics.size());
+
+
         req.setSignedUserId(userPrincipal.getSignedUserId());
         FeedPostRes res = feedService.postFeed(req, pics);
         return new ResultResponse<>("success", res);

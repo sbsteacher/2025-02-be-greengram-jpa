@@ -3,7 +3,7 @@
 <mapper namespace="com.green.greengram.application.user.UserMapper">
     <select id="findProfileUser">
         SELECT u.id, u.pic, u.created_at, u.uid, u.nm
-             , count(DISTINCT f.id) AS feedCount
+             , COUNT(DISTINCT f.id) AS feedCount
              , COUNT(DISTINCT ff.from_user_id, ff.to_user_id) AS followingCount
              , COUNT(DISTINCT tf.from_user_id, tf.to_user_id) AS followerCount
              , MAX(DISTINCT if(tf.from_user_id = #{signedUserId}, 1, 0))
