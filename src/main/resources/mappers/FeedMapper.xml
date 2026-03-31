@@ -20,11 +20,13 @@
         <result property="isLike" column="isLike" />
         <result property="likeCount" column="likeCount" />
         <result property="commentCount" column="commentCount" />
-        <collection property="pics" column="pic" />
+        <collection property="pics" ofType="java.lang.String">
+            <result column="pic" />
+        </collection>
     </resultMap>
 
     <select id="findAllResultMap" resultMap="feedResultMap">
-        SELECT f.id, f.contents, f.location, f.created_at
+        SELECT f.id, f.contents, f.location, f.created_at AS createdAt
              , u.id AS writerUserId
              , u.uid AS writerUid
              , u.nm AS writerNickName
