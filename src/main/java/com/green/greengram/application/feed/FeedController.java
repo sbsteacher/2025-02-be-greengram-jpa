@@ -38,7 +38,7 @@ public class FeedController {
                                        , @ModelAttribute FeedGetReq req ) {
         req.setSignedUserId( userPrincipal.getSignedUserId() );
         log.info( "req: {}", req );
-        List<FeedGetRes> list = feedService.getFeedList(req);
+        List<FeedGetRes> list = feedService.getFeedList2(req);
         return new ResultResponse<>("success", list);
     }
 

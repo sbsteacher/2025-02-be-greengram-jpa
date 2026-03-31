@@ -13,6 +13,7 @@ import java.util.List;
 public interface FeedMapper {
     int save(FeedPostReq req);
     List<FeedGetRes> findAll(FeedGetReq req);
+    List<FeedGetRes> findAllResultMap(FeedGetReq req);
     int delete(FeedDeleteReq req);
     int deleteRef(FeedDeleteReq req);
 

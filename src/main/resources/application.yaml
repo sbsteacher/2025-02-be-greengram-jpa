@@ -6,8 +6,8 @@ constants:   # 커스텀 속성
     secret-key: DeaguGreenArtAcademyClass502MsaClassFighting # 비밀 레시피(절대 공개되어서는 안 된다)
     access-token-cookie-name: access-token
     access-token-cookie-path: /
-    access-token-cookie-validity-seconds: 5 # 15분
-    access-token-validity-milliseconds: 5_000 # 15분
+    access-token-cookie-validity-seconds: 3_600 # 1시간
+    access-token-validity-milliseconds: 3_600_000 # 1시간
     refresh-token-cookie-name: refresh-token
     refresh-token-cookie-path: /api/user/reissue
     refresh-token-cookie-validity-seconds: 1_296_000 # 15일

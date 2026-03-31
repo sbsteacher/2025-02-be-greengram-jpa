@@ -78,6 +78,11 @@ public class FeedService {
         return list;
     }
 
+
+    public List<FeedGetRes> getFeedList2(FeedGetReq req) {
+        return feedMapper.findAllResultMap(req);
+    }
+
     @Transactional
     public int deleteFeed(FeedDeleteReq req) {
 

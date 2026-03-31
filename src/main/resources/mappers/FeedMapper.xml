@@ -8,6 +8,58 @@
              , user_id = #{signedUserId}
     </insert>
 
+    <resultMap id="feedResultMap" type="com.green.greengram.application.feed.model.FeedGetRes">
+        <id property="id" column="id" />
+        <result property="contents" column="contents" />
+        <result property="location" column="location" />
+        <result property="createdAt" column="createdAt" />
+        <result property="writerUserId" column="writerUserId" />
+        <result property="writerUid" column="writerUid" />
+        <result property="writerNickName" column="writerNickName" />
+        <result property="writerPic" column="writerPic" />
+        <result property="isLike" column="isLike" />
+        <result property="likeCount" column="likeCount" />
+        <result property="commentCount" column="commentCount" />
+        <collection property="pics" column="pic" />
+    </resultMap>
+
+    <select id="findAllResultMap" resultMap="feedResultMap">
+        SELECT f.id, f.contents, f.location, f.created_at
+             , u.id AS writerUserId
+             , u.uid AS writerUid
+             , u.nm AS writerNickName
+             , u.pic AS writerPic
+             , fl.feed_id IS NOT NULL AS isLike
+             , IFNULL(flc.likeCount, 0) AS likeCount
+             , IFNULL(fcc.commentCount, 0) AS commentCount
+             , fp.pic
+          FROM feed f
+          JOIN user u
+            ON u.id = f.user_id
+          LEFT JOIN feed_like AS fl
+            ON fl.feed_id = f.id
+           AND fl.user_id = #{signedUserId}
+          LEFT JOIN (
+                SELECT feed_id, COUNT(feed_id) AS likeCount
+                FROM feed_like
+                GROUP BY feed_id
+             ) AS flc
+            ON flc.feed_id = f.id
+          LEFT JOIN (
+                SELECT feed_id, COUNT(feed_id) AS commentCount
+                FROM feed_comment
+                GROUP BY feed_id
+             ) AS fcc
+            ON fcc.feed_id = f.id
+         INNER JOIN feed_pic AS fp
+            ON fp.feed_id = f.id
+        <if test=" profileUserId != null and profileUserId > 0 ">
+            WHERE f.user_id = #{profileUserId}
+        </if>
+        ORDER BY f.id DESC
+        LIMIT #{startIdx}, #{size}
+    </select>
+
     <select id="findAll">
         SELECT f.id, f.contents, f.location, f.created_at
              , u.id AS writerUserId
