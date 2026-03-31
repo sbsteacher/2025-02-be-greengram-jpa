@@ -26,7 +26,7 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: update # create, update, none,   (DDL: 데이터 정의어 - CREATE, ALTER, DROP)
+      ddl-auto: create # create, update, none,   (DDL: 데이터 정의어 - CREATE, ALTER, DROP)
     properties:
       hibernate:
         jdbc:

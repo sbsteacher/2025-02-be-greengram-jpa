@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.greengram.application.feed.FeedMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="feedId">
+        INSERT INTO feed
+           SET location = #{location}
+             , contents = #{contents}
+             , user_id = #{signedUserId}
+    </insert>
+
+    <select id="findAll">
+        SELECT f.id, f.contents, f.location, f.created_at
+             , u.id AS writerUserId
+             , u.uid AS writerUid
+             , u.nm AS writerNickName
+             , u.pic AS writerPic
+             , fl.feed_id IS NOT NULL AS isLike
+             , IFNULL(flc.likeCount, 0) AS likeCount
+             , IFNULL(fcc.commentCount, 0) AS commentCount
+          FROM feed f
+          JOIN user u
+            ON u.id = f.user_id
+          LEFT JOIN feed_like AS fl
+            ON fl.feed_id = f.id
+           AND fl.user_id = #{signedUserId}
+          LEFT JOIN (
+                SELECT feed_id, COUNT(feed_id) AS likeCount
+                  FROM feed_like
+                 GROUP BY feed_id
+          ) AS flc
+            ON flc.feed_id = f.id
+          LEFT JOIN (
+                SELECT feed_id, COUNT(feed_id) AS commentCount
+                  FROM feed_comment
+                 GROUP BY feed_id
+          ) AS fcc
+            ON fcc.feed_id = f.id
+         <if test=" profileUserId != null and profileUserId > 0 ">
+            WHERE f.user_id = #{profileUserId}
+         </if>
+         ORDER BY f.id DESC
+         LIMIT #{startIdx}, #{size}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM feed
+         WHERE id = #{feedId}
+           AND user_id = #{signedUserId}
+    </delete>
+
+    <delete id="deleteRef">
+        DELETE fc, fl, fp
+          FROM feed f
+          LEFT JOIN feed_comment fc
+            ON fc.feed_id = f.id
+          LEFT JOIN feed_like fl
+            ON fl.feed_id = f.id
+          LEFT JOIN feed_pic fp
+            ON fp.feed_id = f.id
+         WHERE f.id = #{feedId}
+           AND f.user_id = #{signedUserId}
+    </delete>
+
+    <insert id="savePics">
+        INSERT INTO feed_pic
+        ( feed_id, pic )
+        VALUES
+        <foreach collection="picSavedNames" item="v" separator=",">
+            ( #{feedId}, #{v} )
+        </foreach>
+    </insert>
+
+    <select id="findPicsById">
+        SELECT pic
+          FROM feed_pic
+         WHERE feed_id = #{feedId}
+    </select>
+
+</mapper>
