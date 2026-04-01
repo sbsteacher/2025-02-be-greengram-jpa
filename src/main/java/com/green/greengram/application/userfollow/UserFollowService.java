@@ -33,13 +33,17 @@ public class UserFollowService {
         newUserFollow.setToUser(toUser);
 
         userFollowRepository.save(newUserFollow);
-
         return 1;
     }
 
     public int deleteUserFollow(UserFollowReq req) {
         //return userFollowMapper.delete(req);
+        UserFollowIds ids = new UserFollowIds();
+        ids.setFromUserId( req.getFromUserId() );
+        ids.setToUserId( req.getToUserId() );
 
+        UserFollow userFollow = userFollowRepository.findById(ids).orElseThrow();
+        userFollowRepository.delete(userFollow);
         return 1;
     }
 }
