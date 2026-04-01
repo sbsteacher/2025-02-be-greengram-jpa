@@ -45,6 +45,13 @@ public class FeedCommentService {
     }
 
     public int deleteFeedComment(FeedCommentDeleteReq req) {
-        return feedCommentMapper.delete(req);
+        //return feedCommentMapper.delete(req);
+        User signedUser = new User();
+        signedUser.setId(req.getSignedUserId());
+        FeedComment feedCommentForDel = feedCommentRepository.findByIdAndUser(req.getFeedCommentId(), signedUser)
+                                        .orElseThrow(() -> new IllegalArgumentException("댓글 작성자가 아닙니다."));
+
+        feedCommentRepository.delete(feedCommentForDel);
+        return 1;
     }
 }
