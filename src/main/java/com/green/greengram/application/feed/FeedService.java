@@ -86,11 +86,16 @@ public class FeedService {
     @Transactional
     public int deleteFeed(FeedDeleteReq req) {
 
-        //feed_pic, feed_like, feed_comment에 feedId가 사용된 모든 row를 삭제
-        feedMapper.deleteRef(req);
+//        //feed_pic, feed_like, feed_comment에 feedId가 사용된 모든 row를 삭제
+//        feedMapper.deleteRef(req);
+//
+//        //feed 테이블의 row는 가장 마지막에 삭제처리
+//        feedMapper.delete(req);
 
-        //feed 테이블의 row는 가장 마지막에 삭제처리
-        feedMapper.delete(req);
+        User signedUser = new User();
+        signedUser.setId( req.getSignedUserId() );
+        Feed feedForDel = feedRepository.findByIdAndWriterUser( req.getFeedId(), signedUser );
+        feedRepository.delete(feedForDel);
 
         // 폴더 째 삭제
         String delDirectoryPath = String.format("%s/feed/%d", myFileUtil.fileUploadPath, req.getFeedId());
