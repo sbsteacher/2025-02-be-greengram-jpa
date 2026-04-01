@@ -21,8 +21,6 @@ public class FeedCommentService {
     private final FeedCommentMapper feedCommentMapper;
 
     public long postFeedComment(FeedCommentPostReq req) {
-        //feedCommentMapper.save(req);
-        //return req.getId();
         User writerUser = new User();
         writerUser.setId( req.getSignedUserId() );
 
