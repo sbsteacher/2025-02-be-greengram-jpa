@@ -9,6 +9,9 @@ import com.green.greengram.entity.FeedComment;
 import com.green.greengram.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +22,6 @@ import java.util.List;
 public class FeedCommentService {
     private final FeedCommentRepository feedCommentRepository;
     private final FeedCommentMapper feedCommentMapper;
-
     public long postFeedComment(FeedCommentPostReq req) {
         User writerUser = new User();
         writerUser.setId( req.getSignedUserId() );
@@ -35,9 +37,10 @@ public class FeedCommentService {
         feedCommentRepository.save( newFeedComment );
         return newFeedComment.getId();
     }
-
     public List<FeedCommentGetRes> getFeedCommentList(FeedCommentGetReq req) {
-        List<FeedCommentGetRes> commentList = feedCommentMapper.findAll(req);
+        //List<FeedCommentGetRes> commentList = feedCommentMapper.findAll(req);
+        Pageable pageable = PageRequest.of(req.getPage() - 1, req.getSize(), Sort.by("fc.id").descending());
+        List<FeedCommentGetRes> commentList = feedCommentRepository.getFeedCommentList(req.getFeedId(), pageable);
         return commentList;
     }
 
