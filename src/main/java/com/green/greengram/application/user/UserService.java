@@ -44,7 +44,8 @@ public class UserService {
 
         //int result = userMapper.signUp(req);
         if( mf != null ) {
-            long id = req.getId(); //프로파일 이미지 저장하는 규칙이 있는데 pk값의 폴더를 만들고 거기에 이미지 파일을 저장한다.
+            //long id = req.getId(); //프로파일 이미지 저장하는 규칙이 있는데 pk값의 폴더를 만들고 거기에 이미지 파일을 저장한다.
+            long id = newUser.getId();
             //String middlePath = String.format("user/%d", id);
             String middlePath = "user/" + id;
             //폴더 만들기
